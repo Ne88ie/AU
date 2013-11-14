@@ -2,13 +2,15 @@
 #include "decoder.h"
 #include <iostream>
 #include <cstring>
+#include <fstream>
 
 using namespace std;
 
-int main(int argc, char const *argv[])
-{	bool regim_c;
-	char const * s_in;
-	char const * s_out;
+int main(int argc, char  *argv[])
+{	
+	bool regim_c;
+	string s_in;
+	string s_out;
 	for (int i = 1; i < argc; ++i){
 		if (strcmp(argv[i],"-c") == 0){
 			regim_c = 1;

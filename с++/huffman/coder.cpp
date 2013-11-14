@@ -1,70 +1,84 @@
+#include "coder.h"
+#include <iostream>
 #include <fstream>
 #include <vector>
 #include <map>
 #include <climits>
-#include "coder.h"
 
-using namespace std;
-
-void coder(char const s_in[], char const s_out[])
+void coder(string s_in, string s_out)
 {	
-	vector<int> weight(0x100, 0);
+	ifstream f_in(s_in.c_str());
+	vector<long> weight(0x100, 0);
+	long fileSize = 1;
+	unsigned char chs;
+	// while (!f_in.eof())
+	while (f_in.peek() != EOF)
 	{	
-		ifstream f(s_in);
-		while (!f.eof())
+		++fileSize;
+		f_in.read((char *) &chs, sizeof(chs));
+		++weight[chs];
+	}
+	if (fileSize == 1)
+	{
+		ofstream f_out(s_out.c_str());
+		f_out.write((char *) &fileSize, sizeof(fileSize));	
+	}
+	else if (fileSize == 2)
+	{	
+		ofstream f_out(s_out.c_str());
+		f_out.write((char *) &fileSize, sizeof(fileSize));
+		f_out.write((char *) &chs, sizeof(chs));
+
+	}
+	else
+	{
+		multimap<long /* weight */,
+				 long /* index in the tree*/> sortedWeight;
+
+		struct Node
 		{
 			unsigned char ch;
-			f.read((char *) &ch, sizeof(ch));
-			++weight[ch];
-		}
+			long parent;
+			long zero;
+			long one;
+			bool branch;
+		};
 
-	}
-
-	multimap<int /* weight */,
-			 int /* index in the tree*/> sortedWeight;
-
-	struct Node
-	{
-		char ch;
-		int parent; 
-		int zero;
-		int one;
-		bool branch;
-	};
-	vector<Node> tree;
-	map<char, int> charMap;
-	for (size_t i = 0; i < 0x100; ++i)
-	{
-		if (weight[i] > 0)
+		vector<Node> tree;
+		map<unsigned char, long> charMap;
+		for (size_t i = 0; i < 0x100; ++i)
 		{
-			tree.push_back(Node{(char)i, -1, -1, -1, false});
-			charMap[i] = tree.size() - 1;
-			sortedWeight.insert(make_pair(weight[i], tree.size() - 1));
+			if (weight[i] > 0)
+			{
+				tree.push_back(Node{(unsigned char)i, -1, -1, -1, false});
+				charMap[i] = tree.size() - 1;
+				sortedWeight.insert(make_pair(weight[i], tree.size() - 1));
+			}
 		}
-	}
-	while(sortedWeight.size() - 1)
-	{
-		int w0 = sortedWeight.begin()->first;
-		int n0 = sortedWeight.begin()->second;
-		sortedWeight.erase(sortedWeight.begin());
-		int w1 = sortedWeight.begin()->first;
-		int n1 = sortedWeight.begin()->second;
-		sortedWeight.erase(sortedWeight.begin());
-		tree.push_back(Node{'\0', -1, n0, n1, false});
-		tree[n0].parent = tree.size() - 1;
-		tree[n0].branch = false;
-		tree[n1].parent = tree.size() - 1;
-		tree[n1].branch = true;
-		sortedWeight.insert(make_pair(w0 + w1, tree.size() - 1));
-	}
-	int fileSize=0;
-	vector<bool> data;
-	{	
-		ifstream f(s_in);
-		while(!f.eof())
-		{	++fileSize;
+		while(sortedWeight.size() - 1)
+		{
+			long w0 = sortedWeight.begin()->first;
+			long n0 = sortedWeight.begin()->second;
+			sortedWeight.erase(sortedWeight.begin());
+			long w1 = sortedWeight.begin()->first;
+			long n1 = sortedWeight.begin()->second;
+			sortedWeight.erase(sortedWeight.begin());
+			tree.push_back(Node{'\0', -1, n0, n1, false});
+			tree[n0].parent = tree.size() - 1;
+			tree[n0].branch = false;
+			tree[n1].parent = tree.size() - 1;
+			tree[n1].branch = true;
+			sortedWeight.insert(make_pair(w0 + w1, tree.size() - 1));
+		}
+		
+		vector<bool> data;
+		f_in.clear();
+		f_in.seekg(0);
+		while(!f_in.eof())
+		// while(f_in.peek() != EOF)
+		{	
 			unsigned char ch;
-			f.read((char *)&ch, sizeof(ch));
+			f_in.read((char *)&ch, sizeof(ch));
 			auto n = tree[charMap[ch]];
 			vector<bool> compressedChar;
 			while(n.parent != -1)
@@ -74,24 +88,20 @@ void coder(char const s_in[], char const s_out[])
 			}
 			data.insert(data.end(), compressedChar.rbegin(),compressedChar.rend());
 		}
-	}
-	ofstream f(s_out);
-	int treeSize = tree.size();
-	f.write((char *) &fileSize, sizeof(fileSize));
-	f.write((char *) &treeSize, sizeof(treeSize));
-	// for (int i=0: sortedWeight)
-	// {
-	// 	cout << i.first;
-	// }
+		ofstream f_out(s_out.c_str());
+		long treeSize = tree.size();
+		f_out.write((char *) &fileSize, sizeof(fileSize));
+		f_out.write((char *) &treeSize, sizeof(treeSize));
 
-	for (auto i: tree)
-		f.write((char *)&i, sizeof(i));
-	for (size_t i = 0; i <= data.size() / CHAR_BIT; ++i)
-	{		
-		unsigned char ch = 0;
-		for (int j = 0; j < CHAR_BIT; ++j)
-			if (data[i * CHAR_BIT + j])
-				ch |= (1 << j);
-		f.write((char *) &ch, sizeof(ch));
+		for (auto i: tree)
+			f_out.write((char *)&i, sizeof(i));
+		for (long i = 0; i <= data.size() / CHAR_BIT; ++i)
+		{		
+			unsigned char ch = 0;
+			for (int j = 0; j < CHAR_BIT; ++j)
+				if (data[i * CHAR_BIT + j])
+					ch |= (1 << j);
+			f_out.write((char *) &ch, sizeof(ch));
+		}
 	}
 }

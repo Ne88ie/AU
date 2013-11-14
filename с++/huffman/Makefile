@@ -1,7 +1,7 @@
 CC=clang++
 CFLAGS=-Wall -std=c++11 -c
 LDFLAGS=-Wall -std=c++11
-SOURCES=main1.cpp
+SOURCES=main.cpp coder.cpp decoder.cpp
 OBJECTS=$(SOURCES:.cpp=.o)
 EXECUTABLE=arj
 
