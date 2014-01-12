@@ -16,7 +16,7 @@ public:
     Instruction(size_t const line): m_line(line) { }
     virtual ~Instruction() { }
     
-    size_t const line() const {
+    size_t line() const {
         return m_line;
     }
     virtual int accept_visit (Visitor* visitor) const = 0;

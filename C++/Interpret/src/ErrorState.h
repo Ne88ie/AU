@@ -5,7 +5,7 @@
 
 class ErrorState: public LexerState {
 public:
-    void next_state(LexingAutomation& automation, SymbolTypes symbol_type) { }
+    void next_state(LexingAutomation&, SymbolTypes) { }
 };
 
 #endif

@@ -5,6 +5,7 @@
 #include <vector>
 #include <map>
 #include <memory>
+#include <cctype>
 
 #include "Lexeme.h"
 
@@ -45,7 +46,7 @@ public:
     string const& buffer() const {
         return m_buffer;
     }
-    size_t const line() const {
+    size_t line() const {
         return m_line;
     }
     vector<Lexeme> const& result() const {

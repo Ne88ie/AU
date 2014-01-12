@@ -48,7 +48,7 @@ public:
     string value() const {
         return m_value;
     }
-    size_t const line() const {
+    size_t line() const {
         return m_line;
     }
 

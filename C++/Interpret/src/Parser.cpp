@@ -70,7 +70,7 @@ instruction_ptr Parser::parse_instruction() {
     if (!ErrorHandler::is_ok())
         return instruction_ptr();
      
-    int m_buf_lexeme_index = m_current_lexeme_index;
+    size_t m_buf_lexeme_index = m_current_lexeme_index;
     instruction_ptr result = parse_assignment();
     
     if (!result) {

@@ -1,5 +1,5 @@
 CC = clang++
-CFLAGS =-Wall -std=c++11 -stdlib=libc++
+CFLAGS =-Wall -std=c++11 -Wextra -pedantic -stdlib=libc++
 
 BINDIR = bin
 SOURCEDIR = src

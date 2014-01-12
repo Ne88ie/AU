@@ -45,7 +45,7 @@ private:
     instruction_ptr parse_while_block();
     instruction_ptr parse_return();
         
-    int m_current_lexeme_index;
+    size_t m_current_lexeme_index;
     const vector<Lexeme>& m_lexemes;
     program_ptr m_program;
 };
