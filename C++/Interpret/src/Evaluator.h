@@ -7,7 +7,6 @@
 #include "Visitor.h"
 #include "Declarations.h"
 #include "Instruction.h"
-#include "ErrorHandler.h"
 
 using std::stack;
 

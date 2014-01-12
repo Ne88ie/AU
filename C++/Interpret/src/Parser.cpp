@@ -2,7 +2,7 @@
 #include <set>
 
 #include "Parser.h"
-#include "ErrorHandler.h"
+#include "Exception.h"
 #include "Instruction.h"
 
 
@@ -24,7 +24,7 @@ void Parser::next_line() {
     if (match_current_lexeme(kEndofLine))
         next_lexeme();
     else
-        ErrorHandler::report_syntax_error(current_lexeme().line());
+        throw Syntax_error(current_lexeme().line());
 }
 
 Lexeme const& Parser::next_lexeme() {
@@ -43,7 +43,7 @@ program_ptr Parser::parse_program() {
     while (match_current_lexeme(kEndofLine))
         next_line();
     
-    while (!match_current_lexeme(kEndofFile) && ErrorHandler::is_ok()) {
+    while (!match_current_lexeme(kEndofFile)) {
         while (match_current_lexeme(kEndofLine))
         next_line();
 
@@ -58,7 +58,7 @@ program_ptr Parser::parse_program() {
         instruction = parse_instruction();
         
         if (!instruction) {
-            ErrorHandler::report_syntax_error(current_lexeme().line());
+            throw Syntax_error(current_lexeme().line());
             return program_ptr();
         }
         
@@ -69,9 +69,6 @@ program_ptr Parser::parse_program() {
 }
 
 instruction_ptr Parser::parse_instruction() {
-    if (!ErrorHandler::is_ok())
-        return instruction_ptr();
-     
     size_t m_buf_lexeme_index = m_current_lexeme_index;
     instruction_ptr result = parse_assignment();
     
@@ -108,7 +105,7 @@ instruction_ptr Parser::parse_print() {
     next_lexeme();   
     instruction_ptr expression = parse_expression();
     if (!expression) {
-        ErrorHandler::report_syntax_error(current_lexeme().line());
+        throw Syntax_error(current_lexeme().line());
         return instruction_ptr();
     } 
     return instruction_ptr(new Print(start_line, expression));
@@ -121,7 +118,7 @@ instruction_ptr Parser::parse_read() {
 
     next_lexeme();
     if (!match_current_lexeme(kId)) {
-        ErrorHandler::report_syntax_error(current_lexeme().line());
+        throw Syntax_error(current_lexeme().line());
         return instruction_ptr();
     }
     string name = current_lexeme().value();
@@ -142,7 +139,7 @@ instruction_ptr Parser::parse_assignment() {
     next_lexeme();
     instruction_ptr expression = parse_expression();
     if (!expression) {
-        ErrorHandler::report_syntax_error(current_lexeme().line());
+        throw Syntax_error(current_lexeme().line());
         return instruction_ptr();
     }
     return instruction_ptr(new Assignment(start_line, name, expression));
@@ -156,7 +153,7 @@ instruction_ptr Parser::parse_return() {
     next_lexeme();
     instruction_ptr expression = parse_expression();
     if (!expression) {
-        ErrorHandler::report_syntax_error(current_lexeme().line());
+        throw Syntax_error(current_lexeme().line());
         return instruction_ptr();
     }
     return instruction_ptr(new Return(start_line, expression));
@@ -170,11 +167,11 @@ instruction_ptr Parser::parse_if_block() {
     next_lexeme();
     instruction_ptr condition = parse_condition();
     if(!condition) {
-        ErrorHandler::report_syntax_error(current_lexeme().line());
+        throw Syntax_error(current_lexeme().line());
         return instruction_ptr();
     }
     if(!match_current_lexeme(kColon)) {
-        ErrorHandler::report_syntax_error(current_lexeme().line());
+        throw Syntax_error(current_lexeme().line());
         return instruction_ptr();
     }
     next_lexeme();
@@ -183,7 +180,7 @@ instruction_ptr Parser::parse_if_block() {
     while (!match_current_lexeme(kEndKeyword)){
         instruction_ptr instruction = parse_instruction();
         if (!instruction){
-            ErrorHandler::report_syntax_error(current_lexeme().line());
+            throw Syntax_error(current_lexeme().line());
             return instruction_ptr();
         }      
         block.push_back(instruction);
@@ -200,11 +197,11 @@ instruction_ptr Parser::parse_while_block(){
     next_lexeme();
     instruction_ptr condition = parse_condition();
     if(!condition){
-        ErrorHandler::report_syntax_error(current_lexeme().line());
+        throw Syntax_error(current_lexeme().line());
         return instruction_ptr();
     }
     if(!match_current_lexeme(kColon)){
-        ErrorHandler::report_syntax_error(current_lexeme().line());
+        throw Syntax_error(current_lexeme().line());
         return instruction_ptr();
     }
     next_lexeme();
@@ -213,7 +210,7 @@ instruction_ptr Parser::parse_while_block(){
     while (!match_current_lexeme(kEndKeyword)) {
         instruction_ptr instruction = parse_instruction();
         if (!instruction) {
-            ErrorHandler::report_syntax_error(current_lexeme().line());
+            throw Syntax_error(current_lexeme().line());
             return instruction_ptr();
         }
         block.push_back(instruction);
@@ -229,13 +226,13 @@ instruction_ptr Parser::parse_function_definition() {
 
     next_lexeme();
     if (!match_current_lexeme(kId)) {
-        ErrorHandler::report_syntax_error(current_lexeme().line());
+        throw Syntax_error(current_lexeme().line());
         return instruction_ptr();
     }
     string name = current_lexeme().value();
     next_lexeme();
     if (!match_current_lexeme(kLeftBracket)) {
-        ErrorHandler::report_syntax_error(current_lexeme().line());
+        throw Syntax_error(current_lexeme().line());
         return instruction_ptr();
     }
     next_lexeme();
@@ -243,7 +240,7 @@ instruction_ptr Parser::parse_function_definition() {
 
     while(!match_current_lexeme(kRightBracket)) {
         if (!match_current_lexeme(kId)) {
-            ErrorHandler::report_syntax_error(current_lexeme().line());
+            throw Syntax_error(current_lexeme().line());
             return instruction_ptr();
         }
         parameters.push_back(current_lexeme().value());
@@ -253,7 +250,7 @@ instruction_ptr Parser::parse_function_definition() {
     }
     next_lexeme();
     if (!match_current_lexeme(kColon)) {
-        ErrorHandler::report_syntax_error(current_lexeme().line());
+        throw Syntax_error(current_lexeme().line());
         return instruction_ptr();
     }
     next_lexeme();
@@ -262,7 +259,7 @@ instruction_ptr Parser::parse_function_definition() {
     while (!match_current_lexeme(kEndKeyword)) {
         instruction_ptr instruction = parse_instruction();
         if (!instruction) {
-            ErrorHandler::report_syntax_error(current_lexeme().line());
+            throw Syntax_error(current_lexeme().line());
             return instruction_ptr();
         }
         function_body.push_back(instruction);
@@ -292,7 +289,7 @@ instruction_ptr Parser::parse_expression() {
         next_lexeme();
         instruction_ptr right = parse_term();
         if (!right) {
-            ErrorHandler::report_syntax_error(current_lexeme().line());
+            throw Syntax_error(current_lexeme().line());
             return instruction_ptr();
         }
         switch (lexeme.type()) {
@@ -303,7 +300,7 @@ instruction_ptr Parser::parse_expression() {
                 left = instruction_ptr(new ArithmeticOperation(start_line, ArithmeticOperation::kSub, left, right));
                 break;
             default:
-                ErrorHandler::report_syntax_error(current_lexeme().line());
+                throw Syntax_error(current_lexeme().line());
                 return instruction_ptr();
         }
     }
@@ -326,7 +323,7 @@ instruction_ptr Parser::parse_function_call() {
         while (true) {
             instruction_ptr parameter = parse_expression();
             if (!parameter) {
-                ErrorHandler::report_syntax_error(current_lexeme().line());
+                throw Syntax_error(current_lexeme().line());
                 return instruction_ptr(); 
             }
             parameters.push_back(parameter);
@@ -334,7 +331,7 @@ instruction_ptr Parser::parse_function_call() {
             else next_lexeme();
         }
         if (!match_current_lexeme(kRightBracket)) {
-            ErrorHandler::report_syntax_error(current_lexeme().line());
+            throw Syntax_error(current_lexeme().line());
             return instruction_ptr();
         }
     }
@@ -352,7 +349,7 @@ instruction_ptr Parser::parse_term() {
         next_lexeme();
         instruction_ptr right = parse_value();
         if (!right) {
-            ErrorHandler::report_syntax_error(current_lexeme().line());
+            throw Syntax_error(current_lexeme().line());
             return instruction_ptr();
         }
         switch (lexeme.type()){
@@ -363,7 +360,7 @@ instruction_ptr Parser::parse_term() {
                 left = instruction_ptr(new ArithmeticOperation(start_line, ArithmeticOperation::kDiv, left, right));
                 break;
             default:
-                ErrorHandler::report_syntax_error(current_lexeme().line());
+                throw Syntax_error(current_lexeme().line());
                 return instruction_ptr();
         }
     }
@@ -376,7 +373,7 @@ instruction_ptr Parser::parse_value() {
         next_lexeme();
         instruction_ptr value = parse_value();
         if (!value) {
-            ErrorHandler::report_syntax_error(current_lexeme().line());
+            throw Syntax_error(current_lexeme().line());
             return instruction_ptr();
         }
         return instruction_ptr(new ArithmeticOperation(start_line,
@@ -388,7 +385,7 @@ instruction_ptr Parser::parse_value() {
         next_lexeme();
         instruction_ptr expression = parse_expression(); 
         if (!match_current_lexeme(kRightBracket)) {
-            ErrorHandler::report_syntax_error(current_lexeme().line());
+            throw Syntax_error(current_lexeme().line());
             return instruction_ptr();
         }
         next_lexeme();
@@ -403,7 +400,7 @@ instruction_ptr Parser::parse_condition() {
     size_t start_line = current_lexeme().line();
     instruction_ptr left = parse_expression();
     if (!left) {
-        ErrorHandler::report_syntax_error(current_lexeme().line());
+        throw Syntax_error(current_lexeme().line());
         return instruction_ptr();
     }
     LexemeTypes logicOperations[] = {kEqualOperation,
@@ -414,14 +411,14 @@ instruction_ptr Parser::parse_condition() {
                                      kGreaterEqualOperation};
     std::set<LexemeTypes> setLogicOperation (logicOperations, logicOperations + 6);
     if (setLogicOperation.count(current_lexeme().type()) == 0) {
-        ErrorHandler::report_syntax_error(current_lexeme().line());
+        throw Syntax_error(current_lexeme().line());
         return instruction_ptr();
     }
     Lexeme lexeme = current_lexeme();
     next_lexeme();
     instruction_ptr right = parse_expression();
     if (!right) {
-        ErrorHandler::report_syntax_error(current_lexeme().line());
+        throw Syntax_error(current_lexeme().line());
         return instruction_ptr();
     }
     switch (lexeme.type()) {
@@ -438,7 +435,7 @@ instruction_ptr Parser::parse_condition() {
         case kGreaterEqualOperation:
             return instruction_ptr(new Conditional(start_line, Conditional::kGreaterEqual, left, right));
         default:
-            ErrorHandler::report_syntax_error(current_lexeme().line());
+            throw Syntax_error(current_lexeme().line());
             return instruction_ptr();
     }
 }

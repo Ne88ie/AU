@@ -5,7 +5,7 @@
 #include "NumericState.h"
 #include "OperationState.h"
 #include "ErrorState.h"
-#include "ErrorHandler.h"
+#include "Exception.h"
 
 
 void EmptyState::next_state(LexingAutomation& automation, SymbolTypes symbol_type) {
@@ -40,7 +40,7 @@ void EmptyState::next_state(LexingAutomation& automation, SymbolTypes symbol_typ
             break;
      
         default:
-            ErrorHandler::report_syntax_error(automation.line());
+            throw Syntax_error(automation.line());
             automation.set_state(state_ptr(new ErrorState()));
     }    
 }

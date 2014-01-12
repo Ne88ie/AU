@@ -11,7 +11,6 @@ class Visitor;
 class Program;
 class LexerState;
 class LexingAutomation;
-class Error;
 
 typedef std::shared_ptr<Instruction> instruction_ptr;
 typedef std::shared_ptr<Program> program_ptr;

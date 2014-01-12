@@ -1,4 +1,3 @@
-#include "ErrorHandler.h"
 #include "Lexer.h"
 
 
@@ -19,7 +18,6 @@ void Lexer::tokenize(ifstream &input_stream) {
             m_automation->next_symbol(line[i]);
         }
         m_automation->next_symbol('\n');
-        if (!ErrorHandler::is_ok()) return;
     }
     m_automation->set_result(Lexeme(kEndofFile, "", m_automation->line()));
 }
