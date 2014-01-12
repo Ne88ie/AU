@@ -7,27 +7,17 @@
 #include <cctype>
 #include <unordered_map>
 
-#include "Lexeme.h"
+#include "LexerState.h"
 
 class LexerState;
+
 
 using std::string;
 using std::vector;
 using std::unordered_map;
+using std::unordered_map;
 
 typedef std::shared_ptr<LexerState> state_ptr;
-
-
-enum SymbolTypes {
-    kUnknownType = -1,
-    kLetter,
-    kUnderscore,
-    kDigit,
-    kOperationSymbol,
-    kSeparator,
-    kLinefeed,
-    kWhitespace
-};
 
 
 class LexingAutomation {
@@ -54,35 +44,16 @@ public:
         return m_result;
     }
     
+
 private:
     LexingAutomation(LexingAutomation const&);
     LexingAutomation& operator=(LexingAutomation const&);
     
-    SymbolTypes determine_symbol_type(char symbol);
     size_t m_line;
     string m_buffer;
     state_ptr m_state;
     vector<Lexeme> m_result;
 };
 
-const std::unordered_map<string, LexemeTypes> mapTypesOp = {
-    {"=", kAssignment},
-    {"<", kLessOperation},
-    {">", kGreaterOperation},
-    {"-", kSubtraction},
-    {"+", kAddition},
-    {"/", kDivision},
-    {"*", kMultiplication},
-    {"==", kEqualOperation},
-    {"!=", kNotEqualOperation},
-    {"<=", kLessEqualOperation},
-    {">=", kGreaterEqualOperation}
-};
-
-Lexeme handle_separator(char separator, size_t const line);
-Lexeme handle_number(string number, size_t const line);
-Lexeme handle_alphanumeric(string alphanumeric, size_t const line);
-Lexeme handle_operation(string operation, size_t const line);
-Lexeme end_of_line(size_t const line);
 
 #endif
