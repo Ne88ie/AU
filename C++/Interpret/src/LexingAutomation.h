@@ -3,9 +3,9 @@
 
 #include <string>
 #include <vector>
-#include <map>
 #include <memory>
 #include <cctype>
+#include <unordered_map>
 
 #include "Lexeme.h"
 
@@ -13,7 +13,7 @@ class LexerState;
 
 using std::string;
 using std::vector;
-using std::multimap;
+using std::unordered_map;
 
 typedef std::shared_ptr<LexerState> state_ptr;
 
@@ -65,24 +65,7 @@ private:
     vector<Lexeme> m_result;
 };
 
-const std::multimap<string, LexemeTypes> mapTypesAlnum = {
-    {"if", kIfKeyword},
-    {"end", kEndKeyword},
-    {"def", kDefKeyword},
-    {"read", kReadKeyword},
-    {"print", kPrintKeyword},
-    {"while", kWhileKeyword},
-    {"return", kReturnKeyword}
-};
-
-const std::multimap<char, LexemeTypes> mapTypesSep = {
-    {',', kComma},
-    {':', kColon},
-    {'(', kLeftBracket},
-    {')', kRightBracket},
-};
-
-const std::multimap<string, LexemeTypes> mapTypesOp = {
+const std::unordered_map<string, LexemeTypes> mapTypesOp = {
     {"=", kAssignment},
     {"<", kLessOperation},
     {">", kGreaterOperation},

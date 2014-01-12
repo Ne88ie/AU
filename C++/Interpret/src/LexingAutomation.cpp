@@ -69,6 +69,22 @@ void LexingAutomation::next_line() {
     clear_buffer();
 }
 
+const std::unordered_map<string, LexemeTypes> mapTypesAlnum = {
+    {"if", kIfKeyword},
+    {"end", kEndKeyword},
+    {"def", kDefKeyword},
+    {"read", kReadKeyword},
+    {"print", kPrintKeyword},
+    {"while", kWhileKeyword},
+    {"return", kReturnKeyword}
+};
+
+const std::unordered_map<char, LexemeTypes> mapTypesSep = {
+    {',', kComma},
+    {':', kColon},
+    {'(', kLeftBracket},
+    {')', kRightBracket},
+};
 
 Lexeme handle_separator(char separator, size_t const line) {
     LexemeTypes type = mapTypesSep.count(separator) != 0 ? mapTypesSep.find(separator)->second : kUnknownLexeme;

@@ -14,7 +14,7 @@ public:
     Exception(size_t const line, string const &msg) : message(msg), line_number(line) {}
     ~Exception() throw () { }
 
-    const char* get_message() const throw() {
+    const char* what() const throw() {
         return message.c_str();
     }
     size_t get_line() const {
