@@ -13,7 +13,7 @@ using std::string;
 
 class Parser {
 public:
-    Parser(vector<Lexeme>& lexemes);
+    Parser(vector<Lexeme> const& lexemes);
     
     program_ptr get_parsed_program() {
         return m_program;

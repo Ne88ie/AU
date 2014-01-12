@@ -40,7 +40,6 @@ int Evaluator::visit(Program const& instruction) {
         (*it)->accept_visit(this);
 
     instruction.InstructionBlock::accept_visit(this);
-    m_variable_scopes.pop();
     return m_result;
 }
 

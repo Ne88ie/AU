@@ -12,19 +12,16 @@ Lexer::Lexer(string const & file_path): m_automation(new LexingAutomation()) {
 
 void Lexer::tokenize(ifstream &input_stream) {
     string line;
-    while (true) {
-        getline(input_stream, line);
-        if (!input_stream) break;
-
+    while (getline(input_stream, line)) {
         m_automation->next_line();
         for (size_t i = 0; i < line.length(); ++i) {
             if (line[i] == '#') break;
             m_automation->next_symbol(line[i]);
         }
-
         m_automation->next_symbol('\n');
         if (!ErrorHandler::is_ok()) return;
     }
+    m_automation->set_result(Lexeme(kEndofFile, "", m_automation->line()));
 }
 
 vector<Lexeme> Lexer::get_result() {

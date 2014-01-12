@@ -6,7 +6,7 @@
 #include "Instruction.h"
 
 
-Parser::Parser(vector<Lexeme>& lexemes):
+Parser::Parser(vector<Lexeme> const& lexemes):
     m_current_lexeme_index(0),
     m_lexemes(lexemes) {
         m_program = parse_program();
@@ -43,9 +43,11 @@ program_ptr Parser::parse_program() {
     while (match_current_lexeme(kEndofLine))
         next_line();
     
-    while (m_current_lexeme_index + 1 < m_lexemes.size() && ErrorHandler::is_ok()) {
+    while (!match_current_lexeme(kEndofFile) && ErrorHandler::is_ok()) {
+        while (match_current_lexeme(kEndofLine))
+        next_line();
+
         instruction = instruction_ptr();
-        
         instruction = parse_function_definition();
         
         if (instruction) {
@@ -77,7 +79,6 @@ instruction_ptr Parser::parse_instruction() {
         m_current_lexeme_index = m_buf_lexeme_index;
         result = parse_expression();
     }
-    
     if (!result)
         result = parse_if_block();
     
@@ -239,21 +240,16 @@ instruction_ptr Parser::parse_function_definition() {
     }
     next_lexeme();
     vector<string> parameters;
-    if (!match_current_lexeme(kRightBracket)) {
-        while (true) {
-            if (!match_current_lexeme(kId)) {
-                ErrorHandler::report_syntax_error(current_lexeme().line());
-                return instruction_ptr();
-            }
-            parameters.push_back(current_lexeme().value());
-            next_lexeme();
-            if (!match_current_lexeme(kComma)) break;
-            next_lexeme();
+
+    while(!match_current_lexeme(kRightBracket)) {
+        if (!match_current_lexeme(kId)) {
+            ErrorHandler::report_syntax_error(current_lexeme().line());
+            return instruction_ptr();
         }
-    }
-    if (!match_current_lexeme(kRightBracket)) {
-        ErrorHandler::report_syntax_error(current_lexeme().line());
-        return instruction_ptr();
+        parameters.push_back(current_lexeme().value());
+        next_lexeme();
+        if (!match_current_lexeme(kComma)) continue;
+        next_lexeme();
     }
     next_lexeme();
     if (!match_current_lexeme(kColon)) {

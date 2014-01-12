@@ -32,7 +32,8 @@ enum LexemeTypes {
     kAddition,
     kSubtraction,
     kDivision,
-    kMultiplication
+    kMultiplication,
+    kEndofFile
 };
 
 class Lexeme {
