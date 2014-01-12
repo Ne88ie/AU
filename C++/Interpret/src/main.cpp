@@ -25,12 +25,12 @@ int main(int argc, char* argv[]) {
         {
             Lexer lexer(code_file_path); 
             Parser parser(lexer.get_result());
-            Evaluator eval(*(parser.get_parsed_program()));    
+            Evaluator eval(parser.get_parsed_program());    
             eval.execute_program();
         }
         catch (Exception const &error)
         {
-            cerr << "line " <<  error.get_line() <<": "<< error.get_message() << ".\n";
+            cout << "line " <<  error.get_line() <<": "<< error.what() << ".\n";
             return 2;
         }
 

@@ -17,7 +17,7 @@ typedef std::pair<std::string, int> variable_instance;
 
 class Evaluator: public Visitor {
 public:
-    Evaluator(Program const& program);
+    Evaluator(program_ptr program);
 
     void execute_program();
     
@@ -43,7 +43,7 @@ private:
     bool m_has_returned;
     int m_result;
     
-    Program const& m_program;
+    program_ptr m_program;
     function_scope m_function_scope;
     stack<variable_scope> m_variable_scopes;
 };

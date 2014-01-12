@@ -8,10 +8,10 @@ using std::cout;
 using std::endl;
 
 
-Evaluator::Evaluator(Program const& program): m_program(program) { }
+Evaluator::Evaluator(program_ptr program): m_program(program) { }
 
 void Evaluator::execute_program() {
-    visit(m_program);
+    visit(*m_program);
 }
 
 int Evaluator::visit(Constant const& instruction) {
