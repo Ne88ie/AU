@@ -3,8 +3,9 @@
 
 #include <vector>
 #include <iostream>
+#include <memory>
+#include <cstddef>
 
-class std::shared_ptr;
 class Instruction;
 class Visitor;
 class Program;

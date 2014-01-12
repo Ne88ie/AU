@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <typeinfo> 
+#include <memory>
 
 #include "Lexeme.h"
 #include "LexingAutomation.h"

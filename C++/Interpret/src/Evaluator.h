@@ -15,6 +15,7 @@ typedef std::map<std::string, int> variable_scope;
 typedef std::map<std::string, Function const*> function_scope;
 typedef std::pair<std::string, int> variable_instance;
 
+
 class Evaluator: public Visitor {
 public:
     Evaluator(Program const& program);

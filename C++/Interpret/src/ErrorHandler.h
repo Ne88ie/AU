@@ -1,6 +1,7 @@
 #ifndef ErrorHandler_H_
 #define ErrorHandler_H_
 
+#include <cstddef>
 #include <string>
 #include <iostream>
 

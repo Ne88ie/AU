@@ -5,6 +5,7 @@
 
 using std::string;
 
+
 enum LexemeTypes {
     kUnknownLexeme = -1,
     kId,
@@ -33,7 +34,6 @@ enum LexemeTypes {
     kDivision,
     kMultiplication
 };
-
 
 class Lexeme {
 public:

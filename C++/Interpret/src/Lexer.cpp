@@ -1,6 +1,7 @@
 #include "ErrorHandler.h"
 #include "Lexer.h"
 
+
 Lexer::Lexer(istream_ptr input_stream):
     m_stream(input_stream),
     m_automation(new LexingAutomation()) { }
