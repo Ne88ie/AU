@@ -111,7 +111,7 @@ public:
         kAdd,
         kSub,
         kMul,
-        kDiv,
+        kDiv
     } m_operation;
     ArithmeticOperation(size_t const line,
                                    ArithmOperation operation,

@@ -13,6 +13,7 @@ class LexerState;
 
 using std::string;
 using std::vector;
+using std::multimap;
 
 typedef std::shared_ptr<LexerState> state_ptr;
 
@@ -64,7 +65,7 @@ private:
     vector<Lexeme> m_result;
 };
 
-const std::map<string, LexemeTypes> mapTypesAlnum = {
+const std::multimap<string, LexemeTypes> mapTypesAlnum = {
     {"if", kIfKeyword},
     {"end", kEndKeyword},
     {"def", kDefKeyword},
@@ -74,14 +75,14 @@ const std::map<string, LexemeTypes> mapTypesAlnum = {
     {"return", kReturnKeyword}
 };
 
-const std::map<char, LexemeTypes> mapTypesSep = {
+const std::multimap<char, LexemeTypes> mapTypesSep = {
     {',', kComma},
     {':', kColon},
     {'(', kLeftBracket},
     {')', kRightBracket},
 };
 
-const std::map<string, LexemeTypes> mapTypesOp = {
+const std::multimap<string, LexemeTypes> mapTypesOp = {
     {"=", kAssignment},
     {"<", kLessOperation},
     {">", kGreaterOperation},
