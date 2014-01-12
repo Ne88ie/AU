@@ -23,5 +23,3 @@ init:
 
 clean:
 	@rm -rf $(BINDIR)
-
-

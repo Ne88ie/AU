@@ -2,15 +2,19 @@
 #include "Lexer.h"
 
 
-Lexer::Lexer(istream_ptr input_stream):
-    m_stream(input_stream),
-    m_automation(new LexingAutomation()) { }
+Lexer::Lexer(string const & file_path): m_automation(new LexingAutomation()) {
+        ifstream input_stream(file_path);
+        if(!input_stream)
+            cout << "File " << file_path << " not found.\n";
+        else
+            tokenize(input_stream);
+    }
 
-void Lexer::tokenize() {
+void Lexer::tokenize(ifstream &input_stream) {
     string line;
     while (true) {
-        getline(*m_stream, line);
-        if (!*m_stream) break;
+        getline(input_stream, line);
+        if (!input_stream) break;
 
         m_automation->next_line();
         for (size_t i = 0; i < line.length(); ++i) {

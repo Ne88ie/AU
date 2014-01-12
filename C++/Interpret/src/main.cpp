@@ -1,13 +1,9 @@
 #include <iostream>
-#include <fstream>
 #include <vector>
-#include <memory>
 #include <cstddef>
 
-using std::ifstream;
 using std::string;
 using std::cout;
-using std::shared_ptr;
 
 #include "Lexer.h"
 #include "Parser.h"
@@ -21,24 +17,18 @@ int main(int argc, char* argv[]) {
         cout << "Not specified source file.\n";
         return 1;
     }
-    
+
     string const code_file_path = argv[1];
-    shared_ptr<ifstream> input_stream(new ifstream(code_file_path));
-    
-    if (!*input_stream) {
-        cout << "File " << code_file_path << " not found.\n";
-        return 2;
-    }
+    ifstream input_stream(code_file_path);
 
     size_t file_length = 0;
-    input_stream->seekg(0, input_stream->end);
-    file_length = input_stream->tellg();
-    input_stream->seekg(0, input_stream->beg);
+    input_stream.seekg(0, input_stream.end);
+    file_length = input_stream.tellg();
+    input_stream.seekg(0, input_stream.beg);
 
     if (file_length == 0) return 0;
 
-    Lexer lexer(input_stream);
-    lexer.tokenize();
+    Lexer lexer(code_file_path);
     
     if (!ErrorHandler::is_ok()) return 3;
     
