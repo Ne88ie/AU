@@ -16,13 +16,13 @@ using std::shared_ptr;
 #include "ErrorHandler.h"
 
 
-int main(int argc, const char* argv[]) {
+int main(int argc, char* argv[]) {
     if (argc < 2) {
         cout << "Not specified source file.\n";
         return 1;
     }
     
-    string code_file_path = argv[1];
+    string const code_file_path = argv[1];
     shared_ptr<ifstream> input_stream(new ifstream(code_file_path));
     
     if (!*input_stream) {
