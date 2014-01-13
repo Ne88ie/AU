@@ -39,10 +39,7 @@ program_ptr Parser::parse_program() {
     instructions program_body;
     instructions functions;
     instruction_ptr instruction = instruction_ptr();
-    
-    // while (match_current_lexeme(kEndofLine))
-    //     next_line();
-    
+        
     if (match_current_lexeme(kEndofLine))
         next_line();
 

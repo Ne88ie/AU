@@ -30,7 +30,7 @@ int main(int argc, char* argv[]) {
         }
         catch (Exception const &error)
         {
-            cout << "line " <<  error.get_line() <<": "<< error.what() << ".\n";
+            cerr << "line " <<  error.get_line() <<": "<< error.what() << ".\n";
             return 2;
         }
 
