@@ -30,15 +30,15 @@ private:
     int visit(Program const&);
     int visit(Function const&);
     int visit(Assignment const&);
-    int visit(FunctionCall const&);
-    int visit(ArithmeticOperation const&);
+    int visit(Function_Call const&);
+    int visit(Arithmetic_Operation const&);
     int visit(Read const&);
     int visit(Print const&);
     int visit(Conditional const&);
-    int visit(IfBlock const&);
-    int visit(WhileBlock const&);
+    int visit(If_Block const&);
+    int visit(While_Block const&);
     int visit(Return const&);
-    int visit(InstructionBlock const&);
+    int visit(Instruction_Block const&);
         
     bool m_has_returned;
     int m_result;

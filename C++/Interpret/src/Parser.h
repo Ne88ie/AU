@@ -26,7 +26,7 @@ private:
     Lexeme const& current_lexeme();
     Lexeme const& next_lexeme();
     void next_line();
-    bool match_current_lexeme(LexemeTypes type); 
+    bool match_current_lexeme(Lexeme_Types type); 
     
     program_ptr parse_program();
     instruction_ptr parse_instruction();

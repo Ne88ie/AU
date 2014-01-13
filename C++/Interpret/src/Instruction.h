@@ -82,9 +82,9 @@ private:
 };
 
 
-class FunctionCall: public Instruction {
+class Function_Call: public Instruction {
 public:
-    FunctionCall(size_t const line, string const& name, instructions arguments):
+    Function_Call(size_t const line, string const& name, instructions arguments):
         Instruction(line),
         m_name(name),
         m_arguments(arguments) { }
@@ -105,16 +105,16 @@ private:
 };
 
 
-class ArithmeticOperation: public Instruction {
+class Arithmetic_Operation: public Instruction {
 public:
-    enum ArithmOperation {
+    enum Arithm_Operation {
         kAdd,
         kSub,
         kMul,
         kDiv
     } m_operation;
-    ArithmeticOperation(size_t const line,
-                                   ArithmOperation operation,
+    Arithmetic_Operation(size_t const line,
+                                   Arithm_Operation operation,
                                    instruction_ptr left_operand,
                                    instruction_ptr right_operand):
         Instruction(line),
@@ -122,7 +122,7 @@ public:
         m_left_operand(left_operand),
         m_right_operand(right_operand) { }
     
-    ArithmOperation operation() const {
+    Arithm_Operation operation() const {
         return m_operation;
     }
     instruction_ptr left_operand() const {
@@ -143,7 +143,7 @@ private:
 
 class Conditional: public Instruction {
 public:
-    enum LogicalOperation {
+    enum Logical_Operation {
         kEqual,
         kNotEqual,
         kLess,
@@ -152,7 +152,7 @@ public:
         kGreaterEqual
     } m_operation;
     Conditional(size_t const line,
-                           LogicalOperation operation,
+                           Logical_Operation operation,
                            instruction_ptr left_operand,
                            instruction_ptr right_operand):
         Instruction(line),
@@ -160,7 +160,7 @@ public:
         m_left_operand(left_operand),
         m_right_operand(right_operand) { }
     
-    LogicalOperation operation() const {
+    Logical_Operation operation() const {
         return m_operation;
     }
     instruction_ptr left_operand() const {
@@ -234,9 +234,9 @@ private:
 };
 
 
-class InstructionBlock: public Instruction {
+class Instruction_Block: public Instruction {
 public:
-    InstructionBlock(size_t const line, instructions const& block):
+    Instruction_Block(size_t const line, instructions const& block):
         Instruction(line),
         m_block(block) { }
     
@@ -252,10 +252,10 @@ private:
 };
 
 
-class IfBlock: public InstructionBlock {
+class If_Block: public Instruction_Block {
 public:
-    IfBlock(size_t const line, instructions const& block, instruction_ptr condition):
-        InstructionBlock(line, block),
+    If_Block(size_t const line, instructions const& block, instruction_ptr condition):
+        Instruction_Block(line, block),
         m_condition(condition) { }
 
     instruction_ptr condition() const {
@@ -270,10 +270,10 @@ private:
 };
 
 
-class WhileBlock: public InstructionBlock {
+class While_Block: public Instruction_Block {
 public:
-    WhileBlock(size_t const line, instructions const& block, instruction_ptr condition):
-        InstructionBlock(line, block),
+    While_Block(size_t const line, instructions const& block, instruction_ptr condition):
+        Instruction_Block(line, block),
         m_condition(condition) { }
 
     instruction_ptr condition() const {
@@ -288,10 +288,10 @@ private:
 };
 
 
-class Function: public InstructionBlock {
+class Function: public Instruction_Block {
 public:
     Function(size_t const line, instructions const& block, string const& name, vector<string> const& arguments):
-        InstructionBlock(line, block),
+        Instruction_Block(line, block),
         m_name(name),
         m_arguments(arguments) { }
     
@@ -311,10 +311,10 @@ private:
 };
 
 
-class Program: public InstructionBlock {
+class Program: public Instruction_Block {
 public:
     Program(size_t const line, instructions const& body, instructions& functions):
-        InstructionBlock(line, body),
+        Instruction_Block(line, body),
         m_functions(functions) { }
 
     instructions const& functions() const {

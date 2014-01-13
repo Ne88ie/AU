@@ -12,9 +12,9 @@ using std::string;
 using std::cout;
 
 #include "Lexeme.h"
-#include "LexingAutomation.h"
+#include "Lexing_Automation.h"
 
-typedef std::shared_ptr<LexingAutomation> automation_ptr;
+typedef std::shared_ptr<Lexing_Automation> automation_ptr;
 
 
 class Lexer {

@@ -1,7 +1,7 @@
 #include "Lexer.h"
 
 
-Lexer::Lexer(string const & file_path): m_automation(new LexingAutomation()) {
+Lexer::Lexer(string const & file_path): m_automation(new Lexing_Automation()) {
         ifstream input_stream(file_path);
         if(!input_stream)
             cout << "File " << file_path << " not found.\n";

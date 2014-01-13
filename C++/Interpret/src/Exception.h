@@ -22,9 +22,9 @@ public:
     }
 };
 
-class EvaluatorException : public Exception {
+class Evaluator_Exception : public Exception {
 public:
-    explicit EvaluatorException(size_t const line_number, string const &message):
+    explicit Evaluator_Exception(size_t const line_number, string const &message):
         Exception(line_number, message)  { }
 };
 
@@ -36,28 +36,28 @@ public:
 };
 
 
-class Division_by_zero_error : public EvaluatorException {
+class Division_by_zero_error : public Evaluator_Exception {
 public:
     explicit Division_by_zero_error(size_t const line_number):
-        EvaluatorException(line_number, "division by zero") { }
+        Evaluator_Exception(line_number, "division by zero") { }
 };
 
-class Undefined_variable_error : public EvaluatorException {
+class Undefined_variable_error : public Evaluator_Exception {
 public:
     explicit Undefined_variable_error(size_t const line_number, string const &variable_name):
-        EvaluatorException(line_number, "undefined variable " + variable_name) { }
+        Evaluator_Exception(line_number, "undefined variable " + variable_name) { }
 };
 
-class Undefined_function_error : public EvaluatorException {
+class Undefined_function_error : public Evaluator_Exception {
 public:
     explicit Undefined_function_error(size_t const line_number, string const &function_name):
-        EvaluatorException(line_number, "undefined function " + function_name) { }
+        Evaluator_Exception(line_number, "undefined function " + function_name) { }
 };
 
-class Arguments_number_mismatch_error : public EvaluatorException {
+class Arguments_number_mismatch_error : public Evaluator_Exception {
 public:
     explicit Arguments_number_mismatch_error(size_t const line_number, string const &function_name):
-        EvaluatorException(line_number, "arguments number mismatch " + function_name) { }
+        Evaluator_Exception(line_number, "arguments number mismatch " + function_name) { }
 };
 
 #endif

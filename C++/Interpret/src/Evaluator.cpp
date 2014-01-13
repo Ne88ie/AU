@@ -34,7 +34,7 @@ int Evaluator::visit(Program const& instruction) {
     for (instructions::const_iterator it = instruction.functions().begin(); it != instruction.functions().end(); ++it)
         (*it)->accept_visit(this);
 
-    instruction.InstructionBlock::accept_visit(this);
+    instruction.Instruction_Block::accept_visit(this);
     return m_result;
 }
 
@@ -49,7 +49,7 @@ int Evaluator::visit(Assignment const& instruction) {
     return m_result;
 }
 
-int Evaluator::visit(FunctionCall const& instruction) {
+int Evaluator::visit(Function_Call const& instruction) {
     function_scope::const_iterator func = m_function_scope.find(instruction.name());
     if (func == m_function_scope.end()) {
         throw Undefined_function_error(instruction.line(), instruction.name());
@@ -69,7 +69,7 @@ int Evaluator::visit(FunctionCall const& instruction) {
         function_to_call_scope[function_to_call->arguments()[i]] = instruction.arguments()[i]->accept_visit(this);
     
     m_variable_scopes.push(function_to_call_scope);
-    function_to_call->InstructionBlock::accept_visit(this);
+    function_to_call->Instruction_Block::accept_visit(this);
     m_variable_scopes.pop();
     int result = m_result;
     m_result = 0;
@@ -77,18 +77,18 @@ int Evaluator::visit(FunctionCall const& instruction) {
     return result;
 }
 
-int Evaluator::visit(ArithmeticOperation const& instruction) {
+int Evaluator::visit(Arithmetic_Operation const& instruction) {
     int left = instruction.left_operand()->accept_visit(this);
     int right = instruction.right_operand()->accept_visit(this);
     
     switch (instruction.operation()) {
-        case ArithmeticOperation::kAdd:
+        case Arithmetic_Operation::kAdd:
             return left + right;   
-        case ArithmeticOperation::kSub:
+        case Arithmetic_Operation::kSub:
             return left - right;
-        case ArithmeticOperation::kMul:
+        case Arithmetic_Operation::kMul:
             return left * right;
-        case ArithmeticOperation::kDiv:
+        case Arithmetic_Operation::kDiv:
             if (right == 0) {
                 throw Division_by_zero_error(instruction.line());
                 return 0;
@@ -132,16 +132,16 @@ int Evaluator::visit(Conditional const& instruction) {
     }
 }
 
-int Evaluator::visit(IfBlock const& instruction) {
+int Evaluator::visit(If_Block const& instruction) {
     if (instruction.condition()->accept_visit(this))
-        instruction.InstructionBlock::accept_visit(this);
+        instruction.Instruction_Block::accept_visit(this);
 
     return m_result;
 }
 
-int Evaluator::visit(WhileBlock const& instruction) {
+int Evaluator::visit(While_Block const& instruction) {
     while (instruction.condition()->accept_visit(this))
-        instruction.InstructionBlock::accept_visit(this);
+        instruction.Instruction_Block::accept_visit(this);
 
     return m_result;
 }
@@ -152,7 +152,7 @@ int Evaluator::visit(Return const& instruction) {
     return m_result;
 }
 
-int Evaluator::visit(InstructionBlock const& instruction) {
+int Evaluator::visit(Instruction_Block const& instruction) {
     for (instructions::const_iterator it = instruction.block().begin(); it != instruction.block().end() && !m_has_returned; ++it)
         (*it)->accept_visit(this);
 

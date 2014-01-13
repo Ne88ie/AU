@@ -16,7 +16,7 @@ Lexeme const& Parser::current_lexeme() {
     return m_lexemes[m_current_lexeme_index];
 }
 
-bool Parser::match_current_lexeme(LexemeTypes type) {
+bool Parser::match_current_lexeme(Lexeme_Types type) {
     return current_lexeme().type() == type;
 }
 
@@ -183,7 +183,7 @@ instruction_ptr Parser::parse_if_block() {
         block.push_back(instruction);
     }
     next_lexeme();
-    return instruction_ptr(new IfBlock(start_line, block, condition));
+    return instruction_ptr(new If_Block(start_line, block, condition));
 }
 
 instruction_ptr Parser::parse_while_block(){
@@ -213,7 +213,7 @@ instruction_ptr Parser::parse_while_block(){
         block.push_back(instruction);
     }
     next_lexeme();
-    return instruction_ptr(new WhileBlock(start_line, block, condition));
+    return instruction_ptr(new While_Block(start_line, block, condition));
 }
 
 instruction_ptr Parser::parse_function_definition() {
@@ -291,10 +291,10 @@ instruction_ptr Parser::parse_expression() {
         }
         switch (lexeme.type()) {
             case kAddition:
-                left = instruction_ptr(new ArithmeticOperation(start_line, ArithmeticOperation::kAdd, left, right));
+                left = instruction_ptr(new Arithmetic_Operation(start_line, Arithmetic_Operation::kAdd, left, right));
                 break;
             case kSubtraction:
-                left = instruction_ptr(new ArithmeticOperation(start_line, ArithmeticOperation::kSub, left, right));
+                left = instruction_ptr(new Arithmetic_Operation(start_line, Arithmetic_Operation::kSub, left, right));
                 break;
             default:
                 throw Syntax_error(current_lexeme().line());
@@ -333,7 +333,7 @@ instruction_ptr Parser::parse_function_call() {
         }
     }
     next_lexeme();
-    return instruction_ptr(new FunctionCall(start_line, name, parameters));
+    return instruction_ptr(new Function_Call(start_line, name, parameters));
 }
 
 instruction_ptr Parser::parse_term() {
@@ -351,10 +351,10 @@ instruction_ptr Parser::parse_term() {
         }
         switch (lexeme.type()){
             case kMultiplication:
-                left = instruction_ptr(new ArithmeticOperation(start_line, ArithmeticOperation::kMul, left, right));
+                left = instruction_ptr(new Arithmetic_Operation(start_line, Arithmetic_Operation::kMul, left, right));
                 break;
             case kDivision:
-                left = instruction_ptr(new ArithmeticOperation(start_line, ArithmeticOperation::kDiv, left, right));
+                left = instruction_ptr(new Arithmetic_Operation(start_line, Arithmetic_Operation::kDiv, left, right));
                 break;
             default:
                 throw Syntax_error(current_lexeme().line());
@@ -373,8 +373,8 @@ instruction_ptr Parser::parse_value() {
             throw Syntax_error(current_lexeme().line());
             return instruction_ptr();
         }
-        return instruction_ptr(new ArithmeticOperation(start_line,
-                               ArithmeticOperation::kSub,
+        return instruction_ptr(new Arithmetic_Operation(start_line,
+                               Arithmetic_Operation::kSub,
                                instruction_ptr(new Constant(start_line, 0)),
                                value));
     }   
@@ -400,14 +400,14 @@ instruction_ptr Parser::parse_condition() {
         throw Syntax_error(current_lexeme().line());
         return instruction_ptr();
     }
-    LexemeTypes logicOperations[] = {kEqualOperation,
+    Lexeme_Types logic_Operations[] = {kEqualOperation,
                                      kNotEqualOperation,
                                      kLessOperation,
                                      kGreaterOperation,
                                      kLessEqualOperation,
                                      kGreaterEqualOperation};
-    std::set<LexemeTypes> setLogicOperation (logicOperations, logicOperations + 6);
-    if (setLogicOperation.count(current_lexeme().type()) == 0) {
+    std::set<Lexeme_Types> set_Logic_Operation (logic_Operations, logic_Operations + 6);
+    if (set_Logic_Operation.count(current_lexeme().type()) == 0) {
         throw Syntax_error(current_lexeme().line());
         return instruction_ptr();
     }

@@ -6,7 +6,7 @@
 using std::string;
 
 
-enum LexemeTypes {
+enum Lexeme_Types {
     kUnknownLexeme = -1,
     kId,
     kNumber,
@@ -38,12 +38,12 @@ enum LexemeTypes {
 
 class Lexeme {
 public:
-    Lexeme(LexemeTypes type, string value, size_t const line):
+    Lexeme(Lexeme_Types type, string value, size_t const line):
         m_type(type),
         m_value(value),
         m_line(line) { }
 
-    LexemeTypes type() const {
+    Lexeme_Types type() const {
         return m_type;
     }
     string value() const {
@@ -54,7 +54,7 @@ public:
     }
 
 private:
-    LexemeTypes m_type;
+    Lexeme_Types m_type;
     string m_value;
     size_t m_line;
 };

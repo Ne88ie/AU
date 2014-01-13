@@ -1,5 +1,5 @@
-#ifndef LexingAutomation_H_
-#define LexingAutomation_H_
+#ifndef Lexing_Automation_H_
+#define Lexing_Automation_H_
 
 #include <string>
 #include <vector>
@@ -7,9 +7,9 @@
 #include <cctype>
 #include <unordered_map>
 
-#include "LexerState.h"
+#include "Lexer_State.h"
 
-class LexerState;
+class Lexer_State;
 
 
 using std::string;
@@ -17,12 +17,12 @@ using std::vector;
 using std::unordered_map;
 using std::unordered_map;
 
-typedef std::shared_ptr<LexerState> state_ptr;
+typedef std::shared_ptr<Lexer_State> state_ptr;
 
 
-class LexingAutomation {
+class Lexing_Automation {
 public:
-    LexingAutomation();
+    Lexing_Automation();
     void set_state(state_ptr);
     void set_result(Lexeme);
     
@@ -46,8 +46,8 @@ public:
     
 
 private:
-    LexingAutomation(LexingAutomation const&);
-    LexingAutomation& operator=(LexingAutomation const&);
+    Lexing_Automation(Lexing_Automation const&);
+    Lexing_Automation& operator=(Lexing_Automation const&);
     
     size_t m_line;
     string m_buffer;

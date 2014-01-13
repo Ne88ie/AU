@@ -1,8 +1,8 @@
-#include "LexerState.h"
+#include "Lexer_State.h"
 #include "Exception.h"
 
 
-SymbolTypes LexerState::determine_symbol_type(char symbol) {
+Symbol_Types Lexer_State::determine_symbol_type(char symbol) {
     if (isalpha(symbol)) return kLetter;  
     if (isdigit(symbol)) return kDigit;
     if (symbol == '\n') return kLinefeed;   
@@ -29,7 +29,7 @@ SymbolTypes LexerState::determine_symbol_type(char symbol) {
     }
 }
 
-const std::unordered_map<string, LexemeTypes> mapTypesAlnum = {
+const std::unordered_map<string, Lexeme_Types> map_Types_Alnumerics = {
     {"if", kIfKeyword},
     {"end", kEndKeyword},
     {"def", kDefKeyword},
@@ -39,14 +39,14 @@ const std::unordered_map<string, LexemeTypes> mapTypesAlnum = {
     {"return", kReturnKeyword}
 };
 
-const std::unordered_map<char, LexemeTypes> mapTypesSep = {
+const std::unordered_map<char, Lexeme_Types> map_Types_Seps = {
     {',', kComma},
     {':', kColon},
     {'(', kLeftBracket},
     {')', kRightBracket},
 };
 
-const std::unordered_map<string, LexemeTypes> mapTypesOp = {
+const std::unordered_map<string, Lexeme_Types> map_Types_Operators = {
     {"=", kAssignment},
     {"<", kLessOperation},
     {">", kGreaterOperation},
@@ -60,31 +60,31 @@ const std::unordered_map<string, LexemeTypes> mapTypesOp = {
     {">=", kGreaterEqualOperation}
 };
 
-LexemeTypes handle_separator(char separator) {
-    return mapTypesSep.count(separator) != 0 ? mapTypesSep.find(separator)->second : kUnknownLexeme;
+Lexeme_Types handle_separator(char separator) {
+    return map_Types_Seps.count(separator) != 0 ? map_Types_Seps.find(separator)->second : kUnknownLexeme;
 }
 
-LexemeTypes handle_alphanumeric(string alphanumeric) {
-    return mapTypesAlnum.count(alphanumeric) != 0 ? mapTypesAlnum.find(alphanumeric)->second : kId;
+Lexeme_Types handle_alphanumeric(string alphanumeric) {
+    return map_Types_Alnumerics.count(alphanumeric) != 0 ? map_Types_Alnumerics.find(alphanumeric)->second : kId;
 }
 
-LexemeTypes handle_operation(string operation) {
-    return mapTypesOp.count(operation) != 0 ? mapTypesOp.find(operation)->second : kUnknownLexeme;
+Lexeme_Types handle_operation(string operation) {
+    return map_Types_Operators.count(operation) != 0 ? map_Types_Operators.find(operation)->second : kUnknownLexeme;
 }
 
 
-void EmptyState::next_state(LexingAutomation& automation, char symbol) {
+void Empty_State::next_state(Lexing_Automation& automation, char symbol) {
     switch (determine_symbol_type(symbol)) {
         case kLetter:
-            automation.set_state(state_ptr(new AlphanumericState()));
+            automation.set_state(state_ptr(new Alphanumeric_State()));
             break;
             
         case kDigit:
-            automation.set_state(state_ptr(new NumericState()));
+            automation.set_state(state_ptr(new Numeric_State()));
             break;
             
         case kOperationSymbol:
-            automation.set_state(state_ptr(new OperationState()));
+            automation.set_state(state_ptr(new Operation_State()));
             break;
             
         case kSeparator:
@@ -98,19 +98,15 @@ void EmptyState::next_state(LexingAutomation& automation, char symbol) {
             break;
             
         case kWhitespace:
-            // if (automation.buffer().length() != 1)
-            //     automation.set_state(state_ptr(new ErrorState()));
-            // else
-                automation.clear_buffer();
+            automation.clear_buffer();
             break;
      
         default:
             throw Syntax_error(automation.line());
-            // automation.set_state(state_ptr(new ErrorState()));
     }    
 }
 
-void AlphanumericState::next_state(LexingAutomation &automation, char symbol) {
+void Alphanumeric_State::next_state(Lexing_Automation &automation, char symbol) {
     switch (determine_symbol_type(symbol)) {
         case kUnderscore:
         case kLetter:
@@ -119,36 +115,35 @@ void AlphanumericState::next_state(LexingAutomation &automation, char symbol) {
         case kOperationSymbol:
             automation.set_result(Lexeme(handle_alphanumeric(automation.get_buffer_prefix()), automation.get_buffer_prefix(), automation.line()));
             automation.set_buffer_to_last_char();
-            automation.set_state(state_ptr(new OperationState()));
+            automation.set_state(state_ptr(new Operation_State()));
             break;
             
         case kSeparator:
             automation.set_result(Lexeme(handle_alphanumeric(automation.get_buffer_prefix()), automation.get_buffer_prefix(), automation.line()));
             automation.set_result(Lexeme(handle_separator(automation.buffer().back()),  "", automation.line()));
             automation.clear_buffer();
-            automation.set_state(state_ptr(new EmptyState()));
+            automation.set_state(state_ptr(new Empty_State()));
             break;
         
         case kLinefeed:
             automation.set_result(Lexeme(handle_alphanumeric(automation.get_buffer_prefix()), automation.get_buffer_prefix(), automation.line()));
             automation.set_result(Lexeme(kEndofLine, "", automation.line()));
             automation.clear_buffer();
-            automation.set_state(state_ptr(new EmptyState()));
+            automation.set_state(state_ptr(new Empty_State()));
             break;
             
         case kWhitespace:
             automation.set_result(Lexeme(handle_alphanumeric(automation.get_buffer_prefix()), automation.get_buffer_prefix(), automation.line()));
             automation.clear_buffer();
-            automation.set_state(state_ptr(new EmptyState()));
+            automation.set_state(state_ptr(new Empty_State()));
             break;
                         
         default:
             throw Syntax_error(automation.line());
-            // automation.set_state(state_ptr(new ErrorState()));
     }
 }
 
-void NumericState::next_state(LexingAutomation &automation, char symbol) {
+void Numeric_State::next_state(Lexing_Automation &automation, char symbol) {
     switch (determine_symbol_type(symbol)) {
         case kDigit:
             break;
@@ -156,60 +151,59 @@ void NumericState::next_state(LexingAutomation &automation, char symbol) {
         case kOperationSymbol:
             automation.set_result(Lexeme(kNumber, automation.get_buffer_prefix(), automation.line()));
             automation.set_buffer_to_last_char();
-            automation.set_state(state_ptr(new OperationState()));
+            automation.set_state(state_ptr(new Operation_State()));
             break;
             
         case kSeparator:
             automation.set_result(Lexeme(kNumber, automation.get_buffer_prefix(), automation.line()));
             automation.set_result(Lexeme(handle_separator(automation.buffer().back()), "", automation.line()));
             automation.clear_buffer();
-            automation.set_state(state_ptr(new EmptyState()));
+            automation.set_state(state_ptr(new Empty_State()));
             break;
         
         case kLinefeed:
             automation.set_result(Lexeme(kNumber, automation.get_buffer_prefix(), automation.line()));
             automation.set_result(Lexeme(kEndofLine, "", automation.line()));
             automation.clear_buffer();
-            automation.set_state(state_ptr(new EmptyState()));
+            automation.set_state(state_ptr(new Empty_State()));
             break;
             
         case kWhitespace:
             automation.set_result(Lexeme(kNumber, automation.get_buffer_prefix(), automation.line()));
             automation.clear_buffer();
-            automation.set_state(state_ptr(new EmptyState()));
+            automation.set_state(state_ptr(new Empty_State()));
             break;
             
         default:
             throw Syntax_error(automation.line());
-            // automation.set_state(state_ptr(new ErrorState()));
     }
 }
 
-void OperationState::next_state(LexingAutomation& automation, char symbol) {
+void Operation_State::next_state(Lexing_Automation& automation, char symbol) {
     switch (determine_symbol_type(symbol)) {
         case kLetter:
             automation.set_result(Lexeme(handle_operation(automation.get_buffer_prefix()), "", automation.line()));
             automation.set_buffer_to_last_char();
-            automation.set_state(state_ptr(new AlphanumericState()));
+            automation.set_state(state_ptr(new Alphanumeric_State()));
             break;
 
         case kDigit:
             automation.set_result(Lexeme(handle_operation(automation.get_buffer_prefix()), "", automation.line()));
             automation.set_buffer_to_last_char();
-            automation.set_state(state_ptr(new NumericState()));
+            automation.set_state(state_ptr(new Numeric_State()));
             break;
             
         case kOperationSymbol:
-            if (mapTypesOp.count(automation.buffer()) == 0) {
+            if (map_Types_Operators.count(automation.buffer()) == 0) {
                 automation.set_result(Lexeme(handle_operation(automation.get_buffer_prefix()), "", automation.line()));
                 string lexeme_symbol(1, automation.buffer().back());
                 automation.set_result(Lexeme(handle_operation(lexeme_symbol), "" , automation.line()));
                 automation.clear_buffer();
-                automation.set_state(state_ptr(new EmptyState()));
+                automation.set_state(state_ptr(new Empty_State()));
             } else {
                 automation.set_result(Lexeme(handle_operation(automation.buffer()), "", automation.line()));
                 automation.clear_buffer();
-                automation.set_state(state_ptr(new EmptyState()));
+                automation.set_state(state_ptr(new Empty_State()));
             }
             break;
             
@@ -217,17 +211,16 @@ void OperationState::next_state(LexingAutomation& automation, char symbol) {
             automation.set_result(Lexeme(handle_operation(automation.get_buffer_prefix()), "", automation.line()));
             automation.set_result(Lexeme(handle_separator(automation.buffer().back()), "", automation.line()));
             automation.clear_buffer();
-            automation.set_state(state_ptr(new EmptyState()));
+            automation.set_state(state_ptr(new Empty_State()));
             break;
             
         case kWhitespace:
             automation.set_result(Lexeme(handle_operation(automation.get_buffer_prefix()), "", automation.line()));
             automation.clear_buffer();
-            automation.set_state(state_ptr(new EmptyState()));
+            automation.set_state(state_ptr(new Empty_State()));
             break;
             
         default:
             throw Syntax_error(automation.line());
-            // automation.set_state(state_ptr(new ErrorState()));
     }
 }
