@@ -46,9 +46,9 @@ public:
     void next_state(LexingAutomation& automation, char symbol);
 };
 
-class ErrorState: public LexerState {
-public:
-    void next_state(LexingAutomation&, char) { }
-};
+// class ErrorState: public LexerState {
+// public:
+//     void next_state(LexingAutomation&, char) { }
+// };
 
 #endif

@@ -32,7 +32,7 @@ public:
     string get_buffer_prefix() const;
     
     void next_symbol(char symbol);
-    void next_line();
+    void increment_line();
     
     string const& buffer() const {
         return m_buffer;

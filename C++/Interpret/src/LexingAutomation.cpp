@@ -2,7 +2,7 @@
 
 
 LexingAutomation::LexingAutomation():
-    m_line(0),
+    m_line(1),
     m_buffer(""),
     m_state(new EmptyState()),
     m_result(vector<Lexeme>()) { }
@@ -36,8 +36,7 @@ void LexingAutomation::next_symbol(char symbol) {
     m_state->next_state(*this, symbol);
 }
 
-void LexingAutomation::next_line() {
-    ++m_line;
-    clear_buffer();
+void LexingAutomation::increment_line() {
+    ++m_line; 
 }
 

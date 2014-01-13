@@ -44,9 +44,6 @@ program_ptr Parser::parse_program() {
         next_line();
     
     while (!match_current_lexeme(kEndofFile)) {
-        while (match_current_lexeme(kEndofLine))
-        next_line();
-
         instruction = instruction_ptr();
         instruction = parse_function_definition();
         
