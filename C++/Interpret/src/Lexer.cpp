@@ -30,5 +30,5 @@ vector<Lexeme> Lexer::get_result() {
         if (result[i].type() == kEndofLine)
             while (i + 1 < result.size() && result[i + 1].type() == kEndofLine) ++i;   
     }
-    return clean_result;
+    return clean_result;   
 }

@@ -40,9 +40,12 @@ program_ptr Parser::parse_program() {
     instructions functions;
     instruction_ptr instruction = instruction_ptr();
     
-    while (match_current_lexeme(kEndofLine))
-        next_line();
+    // while (match_current_lexeme(kEndofLine))
+    //     next_line();
     
+    if (match_current_lexeme(kEndofLine))
+        next_line();
+
     while (!match_current_lexeme(kEndofFile)) {
         instruction = instruction_ptr();
         instruction = parse_function_definition();

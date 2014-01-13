@@ -213,6 +213,10 @@ void Operation_State::next_state(Lexing_Automation& automation, char symbol) {
             automation.clear_buffer();
             automation.set_state(state_ptr(new Empty_State()));
             break;
+        
+        case kLinefeed:
+            throw Syntax_error(automation.line());
+            break;
             
         case kWhitespace:
             automation.set_result(Lexeme(handle_operation(automation.get_buffer_prefix()), "", automation.line()));
