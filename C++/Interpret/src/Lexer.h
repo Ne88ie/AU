@@ -33,7 +33,7 @@ class Lexer {
 public:
     Lexer(string const &file_path);
     
-    vector<Lexeme> const get_result() {
+    vector<Lexeme> const& get_result() {
     	return result;
     }
     
