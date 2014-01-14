@@ -17,8 +17,6 @@ using std::vector;
 #include "Lexeme.h"
 
 
-enum States {empty_state, alphanumeric_state, numeric_state, operation_state};
-
 enum Symbol_Types {
     kUnknownType = -1,
     kLetter,
@@ -40,7 +38,7 @@ public:
 private:
 	size_t line;
 	string buffer;
-	States current_state;
+	enum States {empty_state, alphanumeric_state, numeric_state, operation_state} current_state;
 	vector<Lexeme> result;
 
 	string get_buffer_prefix();
