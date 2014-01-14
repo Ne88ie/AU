@@ -143,17 +143,5 @@ void Lexer::process_line(string const &line) {
         current_lexeme.line = line_number;
         result.push_back(current_lexeme);
     }
-    result.push_back(Lexeme(kEndofLine, "", line_number));
-}
-
-
-vector<Lexeme> const Lexer::get_result() {
-    vector<Lexeme> clean_result;  
-    for (size_t i = 0; i < result.size(); ++i) {
-        clean_result.push_back(result[i]);
-        if (result[i].type == kEndofLine)
-            while (i + 1 < result.size() && result[i + 1].type == kEndofLine)
-                ++i;   
-    }
-    return clean_result;
+    if (result.size() != 0 && result.back().type != kEndofLine) result.push_back(Lexeme(kEndofLine, "", line_number));
 }
