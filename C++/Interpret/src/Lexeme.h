@@ -36,27 +36,15 @@ enum Lexeme_Types {
     kEndofFile
 };
 
-class Lexeme {
-public:
-    Lexeme(Lexeme_Types type, string value, size_t const line):
-        m_type(type),
-        m_value(value),
-        m_line(line) { }
+struct Lexeme {
+    Lexeme(Lexeme_Types new_type = kUnknownLexeme, string new_value = "", size_t const new_line_number = 0):
+        type(new_type),
+        value(new_value),
+        line(new_line_number) { }
 
-    Lexeme_Types type() const {
-        return m_type;
-    }
-    string value() const {
-        return m_value;
-    }
-    size_t line() const {
-        return m_line;
-    }
-
-private:
-    Lexeme_Types m_type;
-    string m_value;
-    size_t m_line;
+    Lexeme_Types type;
+    string value;
+    size_t line;
 };
 
 #endif 
